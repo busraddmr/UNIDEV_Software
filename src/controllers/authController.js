@@ -32,3 +32,16 @@ exports.login = async (req, res) => {
         res.status(500).json({ error: "Giriş işlemi sırasında hata oluştu" });
     }
 };
+// Kullanıcının kendi profilini (username/email) güncellemesi
+exports.updateProfile = async (req, res) => {
+    try {
+        const { username, email } = req.body;
+        const updatedUser = await prisma.user.update({
+            where: { id: req.userData.userId }, // Token'dan gelen güvenli ID
+            data: { username, email }
+        });
+        res.json({ message: "Profil başarıyla güncellendi", updatedUser });
+    } catch (error) {
+        res.status(400).json({ error: "Güncelleme sırasında hata oluştu." });
+    }
+};
