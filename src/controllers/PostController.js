@@ -3,13 +3,20 @@ const prisma = new PrismaClient();
 
 // Tüm makaleleri listeleme
 exports.getAllPosts = async (req, res) => {
+    const { search, page = 1, limit = 5 } = req.query; // Query parametrelerini al
+    
     try {
         const posts = await prisma.post.findMany({
-            include: { author: { select: { username: true } } } // Yazarı da getir
+            where: {
+                title: { contains: search || '', mode: 'insensitive' } // Arama özelliği
+            },
+            skip: (page - 1) * limit, // Sayfalama
+            take: parseInt(limit),
+            include: { author: { select: { username: true } } }
         });
         res.json(posts);
     } catch (error) {
-        res.status(500).json({ error: "Makaleler getirilemedi." });
+        res.status(500).json({ error: "Filtreleme sırasında hata oluştu." });
     }
 };
 

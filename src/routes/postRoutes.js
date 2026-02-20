@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const postController = require('../controllers/PostController');
+const postController = require('../controllers/postController');
 const checkAuth = require('../middlewares/auth'); // Kimlik doğrulama katmanı
 
 router.get('/', postController.getAllPosts);
